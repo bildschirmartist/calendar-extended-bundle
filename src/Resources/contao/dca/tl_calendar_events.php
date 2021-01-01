@@ -618,25 +618,26 @@ class tl_calendar_events_ext extends \Backend
         $maxCount = ($GLOBALS['TL_CONFIG']['tl_calendar_events']['maxRepeatExceptions']) ? $GLOBALS['TL_CONFIG']['tl_calendar_events']['maxRepeatExceptions'] : 365;
         $maxELCount = 250;
 
-        $arrSet['weekday'] = (int)date("w", $dc->activeRecord->startDate);
-        $arrSet['startTime'] = $dc->activeRecord->startDate;
-        $arrSet['endTime'] = $dc->activeRecord->startDate;
+        $arrSet['weekday']      = (int)date("w", $dc->activeRecord->startDate);
+        $arrSet['startTime']    = (int)$dc->activeRecord->startDate;
+        $arrSet['endTime']      = (int)$dc->activeRecord->startDate;
 
         // Set end date
         if (strlen($dc->activeRecord->endDate)) {
             if ($dc->activeRecord->endDate > $dc->activeRecord->startDate) {
-                $arrSet['endDate'] = $dc->activeRecord->endDate;
-                $arrSet['endTime'] = $dc->activeRecord->endDate;
+                $arrSet['endDate']  = (int)$dc->activeRecord->endDate;
+                $arrSet['endTime']  = (int)$dc->activeRecord->endDate;
             } else {
-                $arrSet['endDate'] = $dc->activeRecord->startDate;
-                $arrSet['endTime'] = $dc->activeRecord->startDate;
+                $arrSet['endDate']  = (int)$dc->activeRecord->startDate;
+                $arrSet['endTime']  = (int)$dc->activeRecord->startDate;
             }
         }
+        dump($arrSet);
 
         // Add time
         if ($dc->activeRecord->addTime) {
-            $arrSet['startTime'] = strtotime(date('d.m.Y', $arrSet['startTime']) . ' ' . date('H:i:s', $dc->activeRecord->startTime));
-            $arrSet['endTime'] = strtotime(date('d.m.Y', $arrSet['endTime']) . ' ' . date('H:i:s', $dc->activeRecord->endTime));
+            $arrSet['startTime']    = strtotime(date('d.m.Y', $arrSet['startTime']) . ' ' . date('H:i:s', (int)$dc->activeRecord->startTime));
+            $arrSet['endTime']      = strtotime(date('d.m.Y', $arrSet['endTime']) . ' ' . date('H:i:s', (int)$dc->activeRecord->endTime));
         }
 
         // Set endtime to starttime always...
@@ -683,8 +684,8 @@ class tl_calendar_events_ext extends \Backend
                 $new_fix_date = strtotime($fixedDate['new_repeat']);
 
                 // Check if we have a new start time
-                $new_fix_start_time = strlen($fixedDate['new_start']) ? $fixedDate['new_start'] : date('H:i', $arrSet['startTime']);
-                $new_fix_end_time = strlen($fixedDate['new_end']) ? $fixedDate['new_end'] : date('H:i', $arrSet['endTime']);
+                $new_fix_start_time = strlen($fixedDate['new_start']) ? $fixedDate['new_start'] : date('H:i', (int)$arrSet['startTime']);
+                $new_fix_end_time = strlen($fixedDate['new_end']) ? $fixedDate['new_end'] : date('H:i', (int)$arrSet['endTime']);
 
                 $new_fix_start_date = strtotime(date("d.m.Y", $new_fix_date) . ' ' . date("H:i", strtotime($new_fix_start_time)));
                 $new_fix_end_date = strtotime(date("d.m.Y", $new_fix_date) . ' ' . date("H:i", strtotime($new_fix_end_time)));
